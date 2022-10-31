@@ -60,7 +60,15 @@ def save_one_json(predn, jdict, path, class_map):
     # Save one JSON result {"image_id": 42, "category_id": 18, "bbox": [258.15, 41.29, 348.26, 243.78], "score": 0.236}
     
     
-    
+    image_id = int(path.stem) if path.stem.isnumeric() else path.stem
+    box = xyxy2xywh(predn[:, :4])  # xywh
+    box[:, :2] -= box[:, 2:] / 2  # xy center to top-left corner
+    for p, b in zip(predn.tolist(), box.tolist()):
+        jdict.append({
+            'image_id': image_id,
+            'category_id': class_map[int(p[5])],
+            'bbox': [round(x, 3) for x in b],
+            'score': round(p[4], 5)})
     
     
 
