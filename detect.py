@@ -96,8 +96,19 @@ def run(
     stride, names, pt = model.stride, model.names, model.pt
     imgsz = check_img_size(imgsz, s=stride)  # check image size
 
-    # Dataloader
+# Dataloader
+    bs = 1  # batch_size
+    if webcam:
+        view_img = check_imshow(warn=True)
+        dataset = LoadStreams(source, img_size=imgsz, stride=stride, auto=pt, vid_stride=vid_stride)
+        bs = len(dataset)
+    elif screenshot:
+        dataset = LoadScreenshots(source, img_size=imgsz, stride=stride, auto=pt)
+    else:
+        dataset = LoadImages(source, img_size=imgsz, stride=stride, auto=pt, vid_stride=vid_stride)
+    vid_path, vid_writer = [None] * bs, [None] * bs
    
+
 
 
 
